@@ -1,6 +1,12 @@
 # rpi-info-monitor
 Display information for multiple raspberry pi's in the console
 
+## Install:
+-----------
+To install the flask service on each pi, run the `install.sh` script (as root).
+
+To display the content from the API call use the `display.sh` script or `display` module in the repo directory
+
 ## Examples:
 -----------
 #### Command:
