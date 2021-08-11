@@ -14,6 +14,7 @@ HOSTS = [
 # Services you want to monitor
 SERVICES = [
     'pihole-FTL',
+    'openvpn',
     'qbittorrent-nox',
     'dockerd',
     'minidlnad',
