@@ -17,7 +17,7 @@ def rotate(content: list,
            as_string: bool = False) -> ListOrStr:
     """Rotate the content text or list"""
     content_horizontal = [
-        '-'*(36*len(content)-1),
+        '-'*((WIDTH+1)*len(content)-1),
         [
             '|'.join([
                 r + ' '*(WIDTH - len(r))
@@ -25,7 +25,7 @@ def rotate(content: list,
             ])
             for row in zip(*content)
         ],
-        '-'*(36*len(content)-1),
+        '-'*((WIDTH+1)*len(content)-1),
     ]
 
     if as_string:
@@ -79,10 +79,11 @@ def get_content(show: bool = False,
                 f'IP State:         N/A',
                 f'IP City:          N/A',
                 '-'*WIDTH,
-                '\n',
             ])
             if not vertical:
                 _display_content.append(display_content)
+            else:
+                display_content.append('\n')
             continue
 
         ip_info = status_content['ip_info']

@@ -7,11 +7,11 @@ import argparse
 import time
 
 
-def run():
+def run(vertical=False):
     content = display.get_content(
-        vertical=args.vertical,
+        vertical=vertical,
     )
-    if not args.vertical:
+    if not vertical:
         content = display.rotate(
             content,
             as_string=True,
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # infinite loop (e.g. `while True:`)
     while args.run_forever:
         try:
-            run()
+            run(vertical=args.vertical)
             time.sleep(SLEEP_TIME)
         except KeyboardInterrupt:
             break
