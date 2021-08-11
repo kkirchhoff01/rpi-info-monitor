@@ -5,7 +5,9 @@ Display information for multiple raspberry pi's in the console
 -----------
 To install the flask service on each pi, run the `install.sh` script (as root).
 
-To display the content from the API call use the `display.sh` script or `display` module in the repo directory
+To display the content from the API call use the `display.sh` script or `display` module in the repo directory.
+
+Before running the display, modify the `HOSTS` variable in `display/config.py` to include the host/IP for each pi
 
 ## Examples:
 -----------
