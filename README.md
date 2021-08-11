@@ -5,7 +5,7 @@ Display information for multiple raspberry pi's in the console
 -----------
 #### Command:
 
-`$ ./display.py`
+`$ ./display.sh` or `$ python3 -m display`
 
 #### Output:
 

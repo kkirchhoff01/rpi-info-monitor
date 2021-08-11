@@ -30,6 +30,7 @@ COUNT_DISPLAY_SERVICES = [
 # Width of display
 WIDTH = 35
 API_PORT = 5000
+SLEEP_TIME = 5
 
 __all__ = [
     'HOSTS',
@@ -37,4 +38,5 @@ __all__ = [
     'COUNT_DISPLAY_SERVICES',
     'WIDTH',
     'API_PORT',
+    'SLEEP_TIME',
 ]

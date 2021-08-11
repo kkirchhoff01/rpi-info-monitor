@@ -1,18 +1,13 @@
-#!/usr/bin/python3
-
-import requests
-import time
-import subprocess
-import datetime
-import argparse
-from typing import Union, List
-from config import (
+from .config import (
     HOSTS,
     SERVICES,
     COUNT_DISPLAY_SERVICES,
     WIDTH,
     API_PORT,
 )
+import requests
+import datetime
+from typing import Union, List
 
 
 ListOrStr = Union[List[str], str]
@@ -130,40 +125,3 @@ def get_content(show: bool = False,
         print('\n'.join(display_content))
 
     return display_content
-
-
-if __name__ == '__main__':
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument(
-        '--run-forever',
-        '--run', '-r',
-        action='store_true',
-    )
-    argparser.add_argument(
-        '--vertical',
-        '-v',
-        action='store_true',
-    )
-    args = argparser.parse_args()
-
-    # If run_forever is True, run an
-    # infinite loop (e.g. `while True:`)
-    while args.run_forever:
-        try:
-            content = get_content(vertical=args.vertical)
-            if not args.vertical:
-                content = rotate(content, as_string=True)
-            else:
-                content = '\n'.join(content)
-            _ = subprocess.call('clear', shell=True)
-            print(content)
-            time.sleep(5)
-        except KeyboardInterrupt:
-            break
-    else:
-        content = get_content(vertical=args.vertical)
-        if not args.vertical:
-            content = rotate(content, as_string=True)
-        else:
-            content = '\n'.join(content)
-        print(content)
