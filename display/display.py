@@ -6,38 +6,14 @@ import subprocess
 import datetime
 import argparse
 from typing import Union, List
+from config import (
+    HOSTS,
+    SERVICES,
+    COUNT_DISPLAY_SERVICES,
+    WIDTH,
+    API_PORT,
+)
 
-# Add all host/ip info for each pi
-HOSTS = [
-    {
-        'hostname': 'rpi1',
-        'local_ip': '192.168.1.1',
-    },
-    {
-        'hostname': 'rpi2',
-        'local_ip': '192.168.1.2',
-    },
-]
-
-# Services you want to monitor
-SERVICES = [
-    'pihole-FTL',
-    'qbittorrent-nox',
-    'dockerd',
-    'minidlnad',
-    'sshfs',
-]
-
-# These will show the number or services
-# running instead or 'Running'/'Stopped'
-COUNT_DISPLAY_SERVICES = [
-    'qbittorrent-nox',
-    'sshfs',
-]
-
-# Width of display
-WIDTH = 35
-API_PORT = 5000
 
 ListOrStr = Union[List[str], str]
 
@@ -45,7 +21,7 @@ ListOrStr = Union[List[str], str]
 def rotate(content: list,
            as_string: bool = False) -> ListOrStr:
     """Rotate the content text or list"""
-    content_vert = [
+    content_horizontal = [
         '-'*(36*len(content)-1),
         [
             '|'.join([
@@ -58,13 +34,13 @@ def rotate(content: list,
     ]
 
     if as_string:
-        content_vert = '\n'.join([
-            content_vert[0],
-            '\n'.join(content_vert[1]),
-            content_vert[2],
+        content_horizontal = '\n'.join([
+            content_horizontal[0],
+            '\n'.join(content_horizontal[1]),
+            content_horizontal[2],
         ])
 
-    return content_vert
+    return content_horizontal
 
 
 def get_content(show: bool = False,
