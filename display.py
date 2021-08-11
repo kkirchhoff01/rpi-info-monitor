@@ -170,14 +170,8 @@ if __name__ == '__main__':
     )
     args = argparser.parse_args()
 
-    if not args.run_forever:
-        content = get_content(vertical=args.vertical)
-        if not args.vertical:
-            content = rotate(content, as_string=True)
-        else:
-            content = '\n'.join(content)
-        print(content)
-
+    # If run_forever is True, run an
+    # infinite loop (e.g. `while True:`)
     while args.run_forever:
         try:
             content = get_content(vertical=args.vertical)
@@ -190,3 +184,10 @@ if __name__ == '__main__':
             time.sleep(5)
         except KeyboardInterrupt:
             break
+    else:
+        content = get_content(vertical=args.vertical)
+        if not args.vertical:
+            content = rotate(content, as_string=True)
+        else:
+            content = '\n'.join(content)
+        print(content)

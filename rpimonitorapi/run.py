@@ -13,6 +13,8 @@ import time
 app = Flask(__name__)
 timestamp = None
 
+PORT = 5000
+
 
 @functools.lru_cache(None)
 def get_ip_info_cached():
@@ -99,4 +101,4 @@ def server_info():
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', 5000)
+    app.run('0.0.0.0', PORT)
