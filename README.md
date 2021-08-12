@@ -63,6 +63,9 @@ qbittorrent-nox:  0 Services
 dockerd:          Running
 minidlnad:        Running
 sshfs:            2 Services
+-----------------------------------
+Memory Usage:     0.3/4GB (12.7%)
+CPU Usage:        0.5%
 
 
 rpi2 - 192.168.1.2
@@ -78,6 +81,9 @@ qbittorrent-nox:  2 Services
 dockerd:          Stopped
 minidlnad:        Stopped
 sshfs:            2 Services
+-----------------------------------
+Memory Usage:     0.5/2GB (36.8%)
+CPU Usage:        25.2%
 
 
 rpi3 - 192.168.1.3
@@ -93,4 +99,7 @@ qbittorrent-nox:  0 Services
 dockerd:          Stopped
 minidlnad:        Stopped
 sshfs:            0 Services
+-----------------------------------
+Memory Usage:     0.2/1GB (26.2%)
+CPU Usage:        0.2%
 </pre>
