@@ -4,6 +4,7 @@ from .config import (
     COUNT_DISPLAY_SERVICES,
     WIDTH,
     API_PORT,
+    VALUE_SPACING,
 )
 import requests
 import datetime
@@ -13,11 +14,28 @@ from typing import Union, List
 ListOrStr = Union[List[str], str]
 
 
+def timestring(width=WIDTH):
+    _now = datetime.datetime.now()
+    am_pm, hour = divmod(_now.time().hour, 12)
+    if hour == 0 and am_pm:
+        hour = 12
+    minute = str(_now.time()).split(':')[1]
+    formatted_time = f"{'0' if hour < 10 else ''}{hour}:"\
+        f"{minute} {'PM' if am_pm else 'AM'}"
+    curdate = str(_now).split(' ')[0]
+    buffer_ = width - (len(curdate) + len(formatted_time))
+    return curdate + ' '*buffer_ + formatted_time
+
+
 def rotate(content: list,
            as_string: bool = False) -> ListOrStr:
     """Rotate the content text or list"""
+    new_width = ((WIDTH + 1) * len(content) - 1)
+    curtime = timestring(width=new_width)
     content_horizontal = [
-        '-'*((WIDTH+1)*len(content)-1),
+        '-'*new_width,
+        curtime,
+        '-'*new_width,
         [
             '|'.join([
                 r + ' '*(WIDTH - len(r))
@@ -25,34 +43,43 @@ def rotate(content: list,
             ])
             for row in zip(*content)
         ],
-        '-'*((WIDTH+1)*len(content)-1),
+        '-'*new_width,
     ]
 
     if as_string:
         content_horizontal = '\n'.join([
-            content_horizontal[0],
-            '\n'.join(content_horizontal[1]),
-            content_horizontal[2],
+            *content_horizontal[:3],
+            '\n'.join(content_horizontal[3]),
+            *content_horizontal[4:],
         ])
 
     return content_horizontal
+
+def format_usage_str(resources):
+    mem_str = resources['memory']
+    cpu_str = resources['cpu']
+
+    membuff = VALUE_SPACING - 13
+    cpubuff = VALUE_SPACING - 10
+    return [
+        '-'*WIDTH,
+        'Memory Usage:' + ' '*membuff + mem_str,
+        'CPU Usage:' + ' '*cpubuff + cpu_str,
+    ]
 
 
 def get_content(show: bool = False,
                 vertical: bool = True) -> ListOrStr:
     """Get content for display in a list or string"""
-    dt, _ = str(datetime.datetime.now())\
-        .split('.')
 
+    curtime = timestring()
     display_content = [
-        dt.replace(' ', ' '*17),
+        curtime,
         '-'*WIDTH,
     ]
 
     # Used only for horizontal format
     _display_content = []
-    if not vertical:
-        display_content = [display_content]
 
     for pi_info in HOSTS:
         # Populate seperate lists for each
@@ -89,6 +116,8 @@ def get_content(show: bool = False,
         ip_info = status_content['ip_info']
         service_info = status_content['service_info']
         uptime = status_content.get('uptime', '')
+        usage = status_content.get('usage')
+        
         if uptime:
             uptime = f'({uptime})'
 
@@ -111,8 +140,17 @@ def get_content(show: bool = False,
                     'Running' if service['running']
                     else 'Stopped'
                 )
-            buffer_ = " "*(18 - len(s_title))
+            buffer_ = " "*(VALUE_SPACING - len(s_title))
             display_content.append(f'{s_title}{buffer_}{status}')
+
+        if usage is not None:
+            display_content.extend(format_usage_str(usage))
+        else:
+            if not vertical:
+                display_content.append('-'*WIDTH)
+            else:
+                display_content.append('')
+            display_content.extend(['']*2)
 
         if not vertical:
             _display_content.append(display_content)

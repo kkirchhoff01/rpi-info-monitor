@@ -31,6 +31,7 @@ COUNT_DISPLAY_SERVICES = [
 # Width of display
 WIDTH = 35
 API_PORT = 5000
+VALUE_SPACING = 18
 SLEEP_TIME = 5
 
 __all__ = [
@@ -40,4 +41,5 @@ __all__ = [
     'WIDTH',
     'API_PORT',
     'SLEEP_TIME',
+    'VALUE_SPACING',
 ]

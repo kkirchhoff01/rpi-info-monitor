@@ -36,6 +36,32 @@ def get_uptime_string():
     return f'{d:,.0f}d {hr:.0f}h {mm:.0f}m'
 
 
+def get_usage_info(format_string=True):
+    mem = psutil.virtual_memory()
+    used_gb = mem.used / 1e9
+    total_gb = mem.total / 1e9
+
+    cpu_pct = psutil.cpu_percent()
+
+    if not format_string:
+        return {
+            'memory': {
+                'used': used_gb,
+                'total': total_gb,
+                'percent': mem.percent
+            },
+            'cpu': {
+                'percent': cpu_pct
+            }
+        }
+    else:
+        return {
+            'memory':f'{used_gb:.1f}/{total_gb:.0f}GB '\
+                f'({mem.percent:.1f}%)',
+            'cpu': f'{cpu_pct:.1f}%',
+        }
+
+
 def _check_timestamp(refresh=5):
     global timestamp
     if timestamp is None:
@@ -88,7 +114,8 @@ def server_info():
                 'city': ip_info.get('city_name'),
             },
             'service_info': service_info,
-            'uptime': get_uptime_string()
+            'uptime': get_uptime_string(),
+            'usage': get_usage_info(),
         }
 
         return Response(
