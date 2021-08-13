@@ -46,7 +46,7 @@ VALUE_SPACING = 18
 API_PORT = 5000
 SLEEP_TIME = 5
 PCT_RED_THRESH = 80.0
-TEMP_MEASURE = 'celsius'
+TEMP_UNITS = 'celsius'
 
 __all__ = [
     'HOSTS',
@@ -58,5 +58,5 @@ __all__ = [
     'VALUE_SPACING',
     'PCT_RED_THRESH',
     'VALID_STYLES',
-    'TEMP_MEASURE',
+    'TEMP_UNITS',
 ]

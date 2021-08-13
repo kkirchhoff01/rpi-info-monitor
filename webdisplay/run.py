@@ -36,7 +36,7 @@ if Mobility is not None:
 PORT = 5100
 DEFAULT_FONT = 18
 MOBILE_FONT = 26
-VERT_FONT = 14
+VERT_FONT = 13.5
 
 
 @app.route('/')

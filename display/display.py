@@ -7,7 +7,7 @@ from config import (
     VALUE_SPACING,
     PCT_RED_THRESH,
     VALID_STYLES,
-    TEMP_MEASURE,
+    TEMP_UNITS,
 )
 import requests
 import datetime
@@ -115,10 +115,10 @@ def format_usage_str(resources, colored=True):
         cpu_str += cpu_color
         if temp_info is not None:
             temp_ = temp_info['temp']
-            measure = temp_info['measure']
+            units = temp_info['units']
             if isinstance(temp_, Number):
                 max_temp = (
-                    185.0 if measure.upper() == 'F'
+                    185.0 if units.upper() == 'F'
                     else 85.0
                 )
                 temp_color = (
@@ -139,7 +139,7 @@ def format_usage_str(resources, colored=True):
 
     if temp_info is not None:
         temp_str += f'{temp_info["temp"]}'\
-            f'{temp_info["measure"]}'
+            f'{temp_info["units"]}'
         temp_str += (WIDTH - _get_len(temp_str)) * ' '
         if colored:
             temp_str += Styles.ENDC
@@ -240,7 +240,7 @@ def get_content(show: bool = False,
                 f'http://{local_ip}:{API_PORT}/api/info'
                 f'?services={services}'
                 f'&format_usage=false'
-                f'&temp_measure={TEMP_MEASURE}',
+                f'&temp_units={TEMP_UNITS}',
             )
             status_content = status_content.json()
         except Exception:
