@@ -5,9 +5,25 @@ Display information for multiple raspberry pi's in the console
 -----------
 To install the flask service on each pi, run the `install.sh` script (as root).
 
+On your main pi/machine install the `rpi-info-webapi` service if you want to use the web UI
+
 To display the content from the API call use the `display.sh` script or `display` module in the repo directory.
 
-Before running the display, modify the `HOSTS` variable in `display/config.py` to include the host/IP for each pi
+**NOTE: Before installing, you must populate the `HOSTS` variable in `display/config.py` with the pis/machines you want to monitor**
+
+## Confiugration:
+-----------------
+The `config.py` file in the display is used by the web UI and command line utility. Before running the display, modify the `HOSTS` variable in `display/config.py` to include the host/IP for each pi. The below configurations are available:
+ - `HOSTS` - A list of dictionaries that contain 2 keys: 1) `"hostname"` - the host name of the pi and 2) `"local_ip"` - the local IP address of the pi
+ - `SERVICES` - A list of services (name of proccesses) to display in the service panel
+ - `COUNT_DISPLAY_SERVICES` - A list of names from `SERVICES` that will display the number of running processes instead of `Running`/`Stopped`
+ - `WIDTH` - Character width of each panel (height is automatically adjusted)
+ - `VALUE_SPACING` - Character position of the status values in each panel
+ - `API_PORT` - The web API port that will be used on each pi
+ - `PCT_RED_THRESH` - The threshold used to color numeric values as red
+ - `SLEEP_TIME` - The time to sleep between each refresh (when using `-r`/`--run-forever` in the terminal)
+ - `TEMP_MEASURE` - Units that temperature will be displayed in (fahrenheit/celsius)
+
 
 ## Examples:
 -----------
