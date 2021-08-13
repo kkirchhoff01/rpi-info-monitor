@@ -17,7 +17,7 @@ Before running the display, modify the `HOSTS` variable in `display/config.py` t
 
 #### Output:
 
-
+![rpi-monitor-example](https://user-images.githubusercontent.com/8592588/129414337-fb6f08c3-ef57-4323-9f88-2c88181b79f9.png)
 
 #### Web Output:
 <pre>
@@ -50,6 +50,8 @@ CPU Temp:         45.8C              |CPU Temp:         37.5C              |CPU 
 `$ ./display.sh --vertical` or`$ python3 -m display --vertical` (or replace `--vertical` with `-v`)
 
 #### Output:
+
+![rpi-monitor-example-vertical](https://user-images.githubusercontent.com/8592588/129414343-d500b733-a76c-47dd-9675-bf3947f705bf.png)
 
 #### Web Output:
 
