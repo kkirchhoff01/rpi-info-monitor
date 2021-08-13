@@ -71,7 +71,7 @@ CPU Temp:         45.8C              |CPU Temp:         37.5C              |CPU 
 
 #### Web Output:
 
-<pre>
+<pre style="font-size:12.5">
 2021-08-13                   04:14 PM
 -------------------------------------
 rpi - 192.168.1.1
