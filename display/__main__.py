@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/python3
 
 from . import display
 from .config import SLEEP_TIME
