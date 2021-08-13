@@ -8,13 +8,8 @@ displaypath = os.path.join(
 )
 sys.path.insert(0, os.path.abspath(displaypath))
 import display
-import functools
-import datetime
-import requests
-import psutil
 from flask import (
     Flask,
-    Response,
     request,
     render_template,
 )
@@ -22,10 +17,6 @@ try:
     from flask_mobility import Mobility
 except ImportError:
     Mobility = None
-import socket
-import json
-import copy
-import time
 
 app = Flask('rpiwebdisplay')
 
@@ -34,19 +25,10 @@ if Mobility is not None:
     Mobility(app)
 
 PORT = 5100
+DEFAULT_FONT = 18
+MOBILE_FONT = 27
+VERT_FONT = 14
 
-
-def get_formatted_content():
-    content = display.get_content(
-        vertical=args.vertical,
-    )
-    if not vertical:
-        content = display.rotate(
-            content,
-            as_string=True,
-        )
-    else:
-        content = '\n'.join(content)
 
 @app.route('/')
 def index():
@@ -66,10 +48,14 @@ def index():
         else:
             content = '\n'.join(content)
 
-        if request.MOBILE:
-            fontsize = 27
+        if Mobility is not None and \
+                request.MOBILE:
+            fontsize = MOBILE_FONT
         else:
-            fontsize = (18 if not vertical else 14)
+            fontsize = (
+                DEFAULT_FONT if not vertical
+                else VERT_FONT
+            )
 
         return render_template(
             'index.html',
@@ -80,7 +66,7 @@ def index():
         return render_template(
             'index.html',
             content=f'Error: {e}',
-            fontsize=14,
+            fontsize=DEFAULT_FONT,
         )
 
 
