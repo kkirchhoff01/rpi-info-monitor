@@ -1,5 +1,5 @@
 # rpi-info-monitor
-Display information for multiple raspberry pi's in the console
+A simple, configurable application to monitor multiple raspberry pi's on a network, using the command line or a web UI
 
 ## Install:
 -----------
@@ -22,7 +22,7 @@ The `config.py` file in the display is used by the web UI and command line utili
  - `API_PORT` - The web API port that will be used on each pi
  - `PCT_RED_THRESH` - The threshold used to color numeric values as red
  - `SLEEP_TIME` - The time to sleep between each refresh (when using `-r`/`--run-forever` in the terminal)
- - `TEMP_MEASURE` - Units that temperature will be displayed in (fahrenheit/celsius)
+ - `TEMP_UNITS` - Units that the CPU temperature will be displayed in (fahrenheit/celsius)
 
 
 ## Examples:
