@@ -107,6 +107,15 @@ def server_info():
         else:
             service_info = get_service_info()
 
+        format_usage = request.args\
+            .get('format_usage', True)
+        if isinstance(format_usage, str):
+            format_usage = (
+                True if format_usage.lower() 
+                    in ('true', '1')
+                else False
+            )
+
         res = {
             'ip_info': {
                 'ip': ip_info.get('ip'),
@@ -115,7 +124,7 @@ def server_info():
             },
             'service_info': service_info,
             'uptime': get_uptime_string(),
-            'usage': get_usage_info(),
+            'usage': get_usage_info(format_usage),
         }
 
         return Response(

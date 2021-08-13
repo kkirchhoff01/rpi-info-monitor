@@ -28,11 +28,24 @@ COUNT_DISPLAY_SERVICES = [
     'sshfs',
 ]
 
+VALID_STYLES = [
+    '\x1b[1m',
+    '\x1b[0m',
+    '\x1b[91m',
+    '\x1b[95m',
+    '\x1b[94m',
+    '\x1b[96m',
+    '\x1b[92m',
+    '\x1b[4m',
+    '\x1b[93m',
+]
+
 # Width of display
-WIDTH = 35
-API_PORT = 5000
+WIDTH = 37
 VALUE_SPACING = 18
+API_PORT = 5000
 SLEEP_TIME = 5
+PCT_RED_THRESH = 80.0
 
 __all__ = [
     'HOSTS',
@@ -42,4 +55,6 @@ __all__ = [
     'API_PORT',
     'SLEEP_TIME',
     'VALUE_SPACING',
+    'PCT_RED_THRESH',
+    'VALID_STYLES',
 ]

@@ -5,11 +5,13 @@ import os
 displaypath = os.path.join(
     os.path.dirname(__file__),
     '..',
+    'display',
 )
 sys.path.insert(0, os.path.abspath(displaypath))
 import display
 from flask import (
     Flask,
+    Response,
     request,
     render_template,
 )
@@ -18,9 +20,16 @@ try:
 except ImportError:
     Mobility = None
 
-app = Flask('rpiwebdisplay')
+template_path = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)),
+    'templates',
+)
 
-# Optional dependency
+app = Flask(
+    __name__,
+    template_folder=template_path,
+)
+
 if Mobility is not None:
     Mobility(app)
 
@@ -37,8 +46,20 @@ def index():
             .get('orientation', 'vertical')
         vertical = (orient.lower() == 'vertical')
 
+        refresh_rate = request.args\
+            .get('refresh', 30)
+        if not isinstance(refresh_rate, int):
+            if not refresh_rate.isnumeric():
+                raise ValueError(
+                    'Invalid refresh rate: '
+                    f'{refresh_rate}. Must be '
+                    'an integer'
+                )
+            refresh_rate = int(refresh_rate)
+
         content = display.get_content(
             vertical=vertical,
+            colored=False,
         )
         if not vertical:
             content = display.rotate(
@@ -61,12 +82,12 @@ def index():
             'index.html',
             content=content,
             fontsize=fontsize,
+            refresh=refresh_rate,
         )
     except Exception as e:
-        return render_template(
-            'index.html',
-            content=f'Error: {e}',
-            fontsize=DEFAULT_FONT,
+        return Response(
+            f'Error: {e}',
+            status=500,
         )
 
 
