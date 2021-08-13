@@ -7,10 +7,12 @@ from config import (
     VALUE_SPACING,
     PCT_RED_THRESH,
     VALID_STYLES,
+    TEMP_MEASURE,
 )
 import requests
 import datetime
 from typing import Union, List
+from numbers import Number
 
 
 ListOrStr = Union[List[str], str]
@@ -29,6 +31,7 @@ class Styles:
 
 
 def timestring(width=WIDTH):
+    """Get AM/PM formatted time"""
     _now = datetime.datetime.now()
     am_pm, hour = divmod(_now.time().hour, 12)
     if hour == 0 and am_pm:
@@ -42,6 +45,7 @@ def timestring(width=WIDTH):
 
 
 def _get_len(row):
+    """Get length excluding ANSI colors"""
     row = row[:]
     for s in VALID_STYLES:
         row = row.replace(s, '')
@@ -78,8 +82,10 @@ def rotate(content: list,
 
 
 def format_usage_str(resources, colored=True):
+    """Format information on resource usage"""
     mem_info = resources['memory']
     cpu_info = resources['cpu']
+    temp_info = resources.get('temp')
 
     mem_str = 'Memory Usage:'
     membuff = VALUE_SPACING - len(mem_str)
@@ -88,6 +94,13 @@ def format_usage_str(resources, colored=True):
     cpu_str = 'CPU Usage:'
     cpubuff = VALUE_SPACING - len(cpu_str)
     cpu_str += ' ' * cpubuff
+
+    temp_str = None
+
+    if temp_info is not None:
+        temp_str = 'CPU Temp:'
+        tempbuff = VALUE_SPACING - len(temp_str)
+        temp_str += ' ' * tempbuff
 
     if colored:
         mem_color = (
@@ -100,6 +113,21 @@ def format_usage_str(resources, colored=True):
             else Styles.GREEN
         )
         cpu_str += cpu_color
+        if temp_info is not None:
+            temp_ = temp_info['temp']
+            measure = temp_info['measure']
+            if isinstance(temp_, Number):
+                max_temp = (
+                    185.0 if measure.upper() == 'F'
+                    else 85.0
+                )
+                temp_color = (
+                    Styles.RED if temp_ > max_temp
+                    else Styles.GREEN
+                )
+                temp_str += temp_color
+            else:
+                temp_str += Styles.RED 
 
     mem_str += f'{mem_info["used"]:,.1f}'\
         f'/{mem_info["total"]:,.1f}GB '\
@@ -109,18 +137,31 @@ def format_usage_str(resources, colored=True):
     mem_str += (WIDTH - _get_len(mem_str)) * ' '
     cpu_str += (WIDTH - _get_len(cpu_str)) * ' '
 
+    if temp_info is not None:
+        temp_str += f'{temp_info["temp"]}'\
+            f'{temp_info["measure"]}'
+        temp_str += (WIDTH - _get_len(temp_str)) * ' '
+        if colored:
+            temp_str += Styles.ENDC
+
     if colored:
         mem_str += Styles.ENDC
         cpu_str += Styles.ENDC
 
-    return [
+    res = [
         '-'*WIDTH,
         mem_str,
         cpu_str,
     ]
+    
+    if temp_info is not None:
+        res.append(temp_str)
+
+    return res
 
 
 def format_service_str(service, colored=True):
+    """Format string with service information"""
     s_title = f'{service["name"]}:'
     if service["name"] in COUNT_DISPLAY_SERVICES:
         status = (f'{service["count"]} Services')
@@ -146,6 +187,7 @@ def format_service_str(service, colored=True):
 
 
 def format_ip_info(ip_info):
+    """Format string with IP information"""
     formatted = []
     ip, state, city = 'IP:', 'IP State:', 'IP City:'
     ip += (VALUE_SPACING - len(ip)) * ' '
@@ -197,7 +239,8 @@ def get_content(show: bool = False,
             status_content = requests.get(
                 f'http://{local_ip}:{API_PORT}/api/info'
                 f'?services={services}'
-                f'&format_usage=false',
+                f'&format_usage=false'
+                f'&temp_measure={TEMP_MEASURE}',
             )
             status_content = status_content.json()
         except Exception:

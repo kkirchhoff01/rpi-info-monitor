@@ -35,7 +35,7 @@ if Mobility is not None:
 
 PORT = 5100
 DEFAULT_FONT = 18
-MOBILE_FONT = 27
+MOBILE_FONT = 26
 VERT_FONT = 14
 
 

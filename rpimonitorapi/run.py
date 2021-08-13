@@ -36,12 +36,28 @@ def get_uptime_string():
     return f'{d:,.0f}d {hr:.0f}h {mm:.0f}m'
 
 
-def get_usage_info(format_string=True):
+def get_usage_info(format_string=True, fahrenheit=True):
     mem = psutil.virtual_memory()
     used_gb = mem.used / 1e9
     total_gb = mem.total / 1e9
 
     cpu_pct = psutil.cpu_percent()
+
+    temp_info_ = psutil.sensors_temperatures(
+        fahrenheit=fahrenheit,
+    )
+    temp_info = {}
+    if len(temp_info_) == 0:
+        temp_info['temp'] = 'N/A'
+        temp_info['measure'] = ''
+    else:
+        curtemp = list(temp_info_.values())[0]
+        if len(curtemp) > 0:
+            curtemp = curtemp[0].current
+        else:
+            curtemp = -1
+        temp_info['temp'] = round(curtemp, 1)
+        temp_info['measure'] = ('F' if fahrenheit else 'C')
 
     if not format_string:
         return {
@@ -52,13 +68,15 @@ def get_usage_info(format_string=True):
             },
             'cpu': {
                 'percent': cpu_pct
-            }
+            },
+            'temp': temp_info
         }
     else:
         return {
             'memory':f'{used_gb:.1f}/{total_gb:.0f}GB '\
                 f'({mem.percent:.1f}%)',
             'cpu': f'{cpu_pct:.1f}%',
+            'temp': f'{temp_info["temp"]}{temp_info["measure"]}'
         }
 
 
@@ -115,6 +133,9 @@ def server_info():
                     in ('true', '1')
                 else False
             )
+        temp_measure = request.args\
+            .get('temp_measure', 'fahrenheit')
+        fahrenheit = (temp_measure.lower() == 'fahrenheit')
 
         res = {
             'ip_info': {
@@ -124,7 +145,10 @@ def server_info():
             },
             'service_info': service_info,
             'uptime': get_uptime_string(),
-            'usage': get_usage_info(format_usage),
+            'usage': get_usage_info(
+                format_usage,
+                fahrenheit=fahrenheit,
+            ),
         }
 
         return Response(
