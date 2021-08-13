@@ -1,5 +1,13 @@
 # rpi-info-monitor
-A simple, configurable application to monitor multiple raspberry pi's on a network, using the command line or a web UI
+A simple, configurable set of services to monitor multiple raspberry pi's on a network, using the command line or a web UI
+
+There are three components:
+ 1. `rpimonitorapi` - A flask API that runs on each pi to communicate information about the running proccesses and resources
+ 2. `display` - A module used to format and display the information about each pi into a terminal or web UI
+ 3. `webdisplay` - A flask service that can be used to host the front end web UI (not required to run anything else). It can be installed on the main pi or another machine
+    
+    
+NOTE: The web UI (`webdisplay`) depends on the `display` module. It is suggested to keep these two folders in the same directory if you want to run the web UI. Otherwise you will need to add the `display` module contents to your PYTHONPATH
 
 ## Install:
 -----------
