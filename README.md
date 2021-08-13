@@ -9,16 +9,13 @@ There are three components:
     
 NOTE: The web UI (`webdisplay`) depends on the `display` module. It is suggested to keep these two folders in the same directory if you want to run the web UI. Otherwise you will need to add the `display` module contents to your PYTHONPATH
 
-## Install:
------------
- 1. To install the flask service on each pi, run the `install.sh` script as root or setup the services manually
- 2. On your main pi/machine that will be used to run the display, install the required python modules (`pip install -r requirements.txt`)
- 3. You can then install the `rpi-info-webapi` service if you want to use the web UI (if using the web UI, you can get better formatting for mobile by installing the `flask_mobility` package)
- 4. To run the display loop in a terminal, use `python3 -m display --run-forever [options]`
-
-To display the content from the API call use the `display.sh` script or `display` module in the repo directory.
-
-**NOTE: Before installing, you must populate the `HOSTS` variable in `display/config.py` with the pis/machines you want to monitor**
+## Installation/Usage:
+----------------------
+ 1. Install the flask service on each pi by running the `install.sh` script as root or setting up the services manually
+ 3. On your main pi/machine that will be used to run the display, modify the `HOSTS` variable in `display/config.py` with the host names and local IPs of your pi's
+ 4. Install the required python modules on the main pi/machine (`pip install -r requirements.txt`)
+ 5. You can then install the `rpi-info-webapi` service if you want to use the web UI (if using the web UI, you can get better formatting for mobile by installing the `flask_mobility` package)
+ 6. To run the display loop in a terminal, use `python3 -m display --run-forever [options]`
 
 ## Confiugration:
 -----------------
