@@ -1,5 +1,5 @@
 # rpi-info-monitor
-Display information for multiple raspberry pi's in the console
+A simple, configurable application to monitor multiple raspberry pi's on a network, using the command line or a web UI
 
 ## Install:
 -----------
