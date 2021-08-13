@@ -55,6 +55,7 @@ def rotate(content: list,
 
     return content_horizontal
 
+
 def format_usage_str(resources):
     mem_str = resources['memory']
     cpu_str = resources['cpu']
@@ -117,7 +118,7 @@ def get_content(show: bool = False,
         service_info = status_content['service_info']
         uptime = status_content.get('uptime', '')
         usage = status_content.get('usage')
-        
+
         if uptime:
             uptime = f'({uptime})'
 
