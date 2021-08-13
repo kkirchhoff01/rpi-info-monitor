@@ -1,19 +1,20 @@
 # rpi-info-monitor
-A simple, configurable set of services to monitor multiple raspberry pi's on a network, using the command line or a web UI
+A simple, configurable application and set of services to monitor multiple raspberry pi's on a network. It can be used in a terminal or a web UI.
 
 There are three components:
  1. `rpimonitorapi` - A flask API that runs on each pi to communicate information about the running proccesses and resources
- 2. `display` - A module used to format and display the information about each pi into a terminal or web UI
- 3. `webdisplay` - A flask service that can be used to host the front end web UI (not required to run anything else). It can be installed on the main pi or another machine
+ 2. `display` - A module used to format and display the information about each pi into a terminal or web UI (can be viewed vertically or horizontally)
+ 3. `webdisplay` - A flask service that can be used to host the front end web UI. It can be installed on the main pi or another machine, but is not required
     
     
 NOTE: The web UI (`webdisplay`) depends on the `display` module. It is suggested to keep these two folders in the same directory if you want to run the web UI. Otherwise you will need to add the `display` module contents to your PYTHONPATH
 
 ## Install:
 -----------
-To install the flask service on each pi, run the `install.sh` script (as root).
-
-On your main pi/machine install the `rpi-info-webapi` service if you want to use the web UI
+ 1. To install the flask service on each pi, run the `install.sh` script as root or setup the services manually
+ 2. On your main pi/machine that will be used to run the display, install the required python modules (`pip install -r requirements.txt`)
+ 3. You can then install the `rpi-info-webapi` service if you want to use the web UI (if using the web UI, you can get better formatting for mobile by installing the `flask_mobility` package)
+ 4. To run the display loop in a terminal, use `python3 -m display --run-forever [options]`
 
 To display the content from the API call use the `display.sh` script or `display` module in the repo directory.
 
@@ -21,9 +22,9 @@ To display the content from the API call use the `display.sh` script or `display
 
 ## Confiugration:
 -----------------
-The `config.py` file in the display is used by the web UI and command line utility. Before running the display, modify the `HOSTS` variable in `display/config.py` to include the host/IP for each pi. The below configurations are available:
+The `config.py` file in the display directory/module is used by the web UI and command line utility. The below configurations are available:
  - `HOSTS` - A list of dictionaries that contain 2 keys: 1) `"hostname"` - the host name of the pi and 2) `"local_ip"` - the local IP address of the pi
- - `SERVICES` - A list of services (name of proccesses) to display in the service panel
+ - `SERVICES` - A list of services (names of proccesses) to display in the services panel
  - `COUNT_DISPLAY_SERVICES` - A list of names from `SERVICES` that will display the number of running processes instead of `Running`/`Stopped`
  - `WIDTH` - Character width of each panel (height is automatically adjusted)
  - `VALUE_SPACING` - Character position of the status values in each panel
@@ -38,6 +39,8 @@ The `config.py` file in the display is used by the web UI and command line utili
 #### Command:
 
 `$ ./display.sh` or `$ python3 -m display`
+
+NOTE: You can pass `--no-color` to not include coloring in the terminal display
 
 #### Output:
 
