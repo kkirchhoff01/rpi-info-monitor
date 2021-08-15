@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/bin/bash
 
 from . import display
 from .config import SLEEP_TIME
@@ -7,8 +7,9 @@ import argparse
 import time
 
 
-def run(vertical=False, colored=True):
+def run(vertical=False, colored=True, temp_units=None):
     content = display.get_content(
+        temp_units=temp_units,
         vertical=vertical,
         colored=colored,
     )
@@ -42,6 +43,12 @@ if __name__ == '__main__':
         dest='colored',
     )
     argparser.add_argument(
+        '--temp-units',
+        '--units',
+        '-t',
+        type=lambda x: str(x).lower(),
+    )
+    argparser.add_argument(
         '--refresh',
         type=int,
         default=SLEEP_TIME,
@@ -52,12 +59,15 @@ if __name__ == '__main__':
     # infinite loop (e.g. `while True:`)
     while args.run_forever:
         try:
-            run(vertical=args.vertical, colored=args.colored)
+            run(vertical=args.vertical,
+                colored=args.colored,
+                temp_units=args.temp_units)
             time.sleep(args.refresh)
         except KeyboardInterrupt:
             break
     else:
         content = display.get_content(
+            temp_units=args.temp_units,
             vertical=args.vertical,
             colored=args.colored,
         )
