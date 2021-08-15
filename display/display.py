@@ -33,9 +33,12 @@ class Styles:
 def timestring(width=WIDTH):
     """Get AM/PM formatted time"""
     _now = datetime.datetime.now()
-    am_pm, hour = divmod(_now.time().hour, 12)
-    if hour == 0 and am_pm:
-        hour = 12
+    hour = _now.time().hour
+    if hour == 0:
+        am_pm, hour = False, 12
+    else:
+        am_pm, hour = divmod(hour, 12)
+    
     minute = str(_now.time()).split(':')[1]
     formatted_time = f"{'0' if hour < 10 else ''}{hour}:"\
         f"{minute} {'PM' if am_pm else 'AM'}"
