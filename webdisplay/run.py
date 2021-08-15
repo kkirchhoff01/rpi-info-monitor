@@ -36,8 +36,9 @@ if Mobility is not None:
 
 PORT = 5100
 DEFAULT_FONT = 18
-MOBILE_FONT = 26
 VERT_FONT = 13.5
+MOBILE_HOR_FONT = 12
+MOBILE_VERT_FONT = 26
 TEMP_UNITS = 'celsius'
 BASE_DISPLAY = 3
 FONT_UNIT = 4
@@ -45,7 +46,12 @@ MIN_FONT = 8
 
 
 def get_font(default=DEFAULT_FONT):
+    """Adjust size of font for number of panels"""
+    # Don't adjust if there are less than 3 panels
     adjust_weight = max(0, len(HOSTS) - BASE_DISPLAY)
+
+    # Reduce the original font size by a weight
+    # proportional to the number of displays
     return max(
         default - adjust_weight * FONT_UNIT,
         MIN_FONT,
@@ -94,13 +100,17 @@ def index():
         else:
             content = '\n'.join(content)
 
-        if is_mobile:
-            fontsize = MOBILE_FONT
+        if not vertical:
+            fontsize = (
+                MOBILE_HOR_FONT if is_mobile 
+                else DEFAULT_FONT
+            )
+            fontsize = get_font(fontsize)
         else:
-            if not vertical:
-                fontsize = get_font(DEFAULT_FONT)
-            else:
-                fontsize = VERT_FONT
+            fontsize = (
+                MOBILE_VERT_FONT if is_mobile 
+                else VERT_FONT
+            )
 
         return render_template(
             'index.html',

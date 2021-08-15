@@ -2,6 +2,22 @@
 <head>
     <meta http-equiv="refresh" content="{{refresh}}">
 </head>
+<script>
+    function updateOrientation() {
+        var newUrl = new URL(window.location.href);
+        if (window.matchMedia("(orientation: landscape)").matches) {
+            newUrl.searchParams.set('orientation', 'horizontal');
+        }
+        else {
+            newUrl.searchParams.set('orientation', 'vertical');
+        }
+        
+        window.location.assign(newUrl.toString());
+    }
+    window.addEventListener("orientationchange", function() {
+        updateOrientation();
+    }, false);
+</script>
 <pre style="font-size:{{fontsize}}">
 {{content}}
 </pre>
