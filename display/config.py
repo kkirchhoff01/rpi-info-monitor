@@ -47,6 +47,7 @@ API_PORT = 5000
 SLEEP_TIME = 5
 PCT_RED_THRESH = 80.0
 TEMP_UNITS = 'celsius'
+MAX_TEMP = 185.0
 
 __all__ = [
     'HOSTS',
@@ -59,4 +60,5 @@ __all__ = [
     'PCT_RED_THRESH',
     'VALID_STYLES',
     'TEMP_UNITS',
+    'MAX_TEMP',
 ]

@@ -8,6 +8,7 @@ from config import (
     PCT_RED_THRESH,
     VALID_STYLES,
     TEMP_UNITS,
+    MAX_TEMP,
 )
 import requests
 import datetime
@@ -121,8 +122,8 @@ def format_usage_str(resources, colored=True):
             units = temp_info['units']
             if isinstance(temp_, Number):
                 max_temp = (
-                    185.0 if units.upper() == 'F'
-                    else 85.0
+                    MAX_TEMP if units.upper() == 'F'
+                    else (MAX_TEMP - 32) * 5 / 9
                 )
                 temp_color = (
                     Styles.RED if temp_ > max_temp

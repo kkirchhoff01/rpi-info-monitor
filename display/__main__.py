@@ -25,7 +25,7 @@ def run(vertical=False, colored=True, temp_units=None):
 
 
 if __name__ == '__main__':
-    argparser = argparse.ArgumentParser()
+    argparser = argparse.ArgumentParser(prog='display')
     argparser.add_argument(
         '--run-forever',
         '--run', '-r',
