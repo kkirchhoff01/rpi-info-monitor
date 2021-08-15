@@ -6,7 +6,7 @@ Conflicts=getty@tty1.service
 [Service]
 Type=simple
 WorkingDirectory=/usr/local/sbin/rpi-info-monitor
-ExecStart=/usr/bin/python3 /usr/local/sbin/rpi-info-monitor/webisplay/run.py
+ExecStart=/usr/bin/python3 /usr/local/sbin/rpi-info-monitor/webdisplay/run.py
 StandardInput=tty-force
 
 [Install]
