@@ -9,6 +9,7 @@ displaypath = os.path.join(
 )
 sys.path.insert(0, os.path.abspath(displaypath))
 import display
+from config import HOSTS
 from flask import (
     Flask,
     Response,
@@ -38,14 +39,33 @@ DEFAULT_FONT = 18
 MOBILE_FONT = 26
 VERT_FONT = 13.5
 TEMP_UNITS = 'celsius'
+BASE_DISPLAY = 3
+FONT_UNIT = 4
+MIN_FONT = 8
+
+
+def get_font(default=DEFAULT_FONT):
+    adjust_weight = max(0, len(HOSTS) - BASE_DISPLAY)
+    return max(
+        default - adjust_weight * FONT_UNIT,
+        MIN_FONT,
+    )
 
 
 @app.route('/')
 def index():
     try:
+        is_mobile = (
+            Mobility is not None and
+            request.MOBILE
+        )
+
         orient = request.args\
-            .get('orientation', 'vertical')
-        vertical = (orient.lower() == 'vertical')
+            .get('orientation')
+        if orient is not None:
+            vertical = (orient.lower() == 'vertical')
+        else:
+            vertical = is_mobile
 
         temp_units = request.args\
             .get('temp_units', 'celcius')
@@ -74,14 +94,13 @@ def index():
         else:
             content = '\n'.join(content)
 
-        if Mobility is not None and \
-                request.MOBILE:
+        if is_mobile:
             fontsize = MOBILE_FONT
         else:
-            fontsize = (
-                DEFAULT_FONT if not vertical
-                else VERT_FONT
-            )
+            if not vertical:
+                fontsize = get_font(DEFAULT_FONT)
+            else:
+                fontsize = VERT_FONT
 
         return render_template(
             'index.html',

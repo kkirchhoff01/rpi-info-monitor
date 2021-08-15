@@ -1,3 +1,6 @@
 #!/bin/bash
 
-python3 -m display $1 $2 $3 $4 $5
+OLD_PATH=$(pwd)
+cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
+clear && python3 -m display $@
+cd $OLD_PATH

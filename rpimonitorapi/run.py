@@ -112,6 +112,16 @@ def get_service_info(services=('pihole-FTL', 'qbittorrent-nox')):
     return copy.deepcopy(service_info)
 
 
+@app.route('/api/clear-cache')
+def clear_cache():
+    try:
+        get_ip_info_cached.cache_clear()
+        get_service_info_cached.cache_clear()
+        return Response(status=200)
+    except Exception as e:
+        return Response(str(e), status=500)
+
+
 @app.route('/api/info')
 def server_info():
     try:
