@@ -106,6 +106,13 @@ def index():
         else:
             vertical = is_mobile
 
+        mode = request.args\
+            .get('mode', 'light')
+        mode = (
+            'dark-mode' if mode.lower() == 'dark'
+            else 'light-mode'
+        )
+
         temp_units = request.args\
             .get('temp_units', 'celcius')
 
@@ -171,6 +178,7 @@ def index():
             content=content,
             fontsize=fontsize,
             refresh=refresh_rate,
+            mode=mode,
         )
     except Exception as e:
         return Response(
