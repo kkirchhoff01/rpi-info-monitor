@@ -210,9 +210,9 @@ def format_ip_info(ip_info):
     return [ip, state, city]
 
 
-def get_content(show: bool = False,
-                vertical: bool = True,
-                colored: bool = True) -> ListOrStr:
+def get_content(vertical: bool = True,
+                colored: bool = True,
+                temp_units: str = None) -> ListOrStr:
     """Get content for display in a list or string"""
 
     curtime = timestring()
@@ -239,11 +239,12 @@ def get_content(show: bool = False,
             header = f'{hostname} - {local_ip}'
         try:
             services = ','.join(SERVICES)
+            temp_units = temp_units or TEMP_UNITS
             status_content = requests.get(
                 f'http://{local_ip}:{API_PORT}/api/info'
                 f'?services={services}'
                 f'&format_usage=false'
-                f'&temp_units={TEMP_UNITS}',
+                f'&temp_units={temp_units}',
             )
             status_content = status_content.json()
         except Exception:
@@ -304,8 +305,5 @@ def get_content(show: bool = False,
 
     if not vertical:
         display_content = _display_content[:]
-
-    if show:
-        print('\n'.join(display_content))
 
     return display_content

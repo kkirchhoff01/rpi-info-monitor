@@ -37,6 +37,7 @@ PORT = 5100
 DEFAULT_FONT = 18
 MOBILE_FONT = 26
 VERT_FONT = 13.5
+TEMP_UNITS = 'celsius'
 
 
 @app.route('/')
@@ -45,6 +46,9 @@ def index():
         orient = request.args\
             .get('orientation', 'vertical')
         vertical = (orient.lower() == 'vertical')
+
+        temp_units = request.args\
+            .get('temp_units', 'celcius')
 
         refresh_rate = request.args\
             .get('refresh', 30)
@@ -58,6 +62,7 @@ def index():
             refresh_rate = int(refresh_rate)
 
         content = display.get_content(
+            temp_units=temp_units,
             vertical=vertical,
             colored=False,
         )
