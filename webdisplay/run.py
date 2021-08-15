@@ -9,13 +9,18 @@ displaypath = os.path.join(
 )
 sys.path.insert(0, os.path.abspath(displaypath))
 import display
-from config import HOSTS
+from display import Styles
+from config import HOSTS, VALID_STYLES
 from flask import (
     Flask,
     Response,
     request,
     render_template,
 )
+try:
+    from markupsafe import Markup
+except ImportError:
+    Markup = None
 try:
     from flask_mobility import Mobility
 except ImportError:
@@ -39,6 +44,7 @@ DEFAULT_FONT = 18
 VERT_FONT = 13.5
 MOBILE_HOR_FONT = 12
 MOBILE_VERT_FONT = 26
+MOBILE_WEIGHT_FONT = 17
 TEMP_UNITS = 'celsius'
 BASE_DISPLAY = 3
 FONT_UNIT = 4
@@ -57,6 +63,33 @@ def get_font(default=DEFAULT_FONT):
         MIN_FONT,
     )
 
+def _convert_colors(content):
+    color_map = {
+        Styles.RED: '<span class="red">',
+        Styles.GREEN: '<span class="green">',
+        Styles.OKBLUE: '<span class="blue">',
+        Styles.BOLD: '<span class="converted-bold">',
+        Styles.ENDC: '</span>',
+    }
+    new_content = []
+    is_list = isinstance(content, (list, tuple))
+    if not is_list:
+        content = [content]
+    
+    for row in content:
+        if isinstance(row, (list, tuple)):
+            new_content.extend(_convert_colors(row))
+            continue
+        for color in VALID_STYLES:
+            new_color = color_map.get(color, '')
+            row = row.replace(color, new_color)
+    
+        new_content.append(row)
+
+    if not is_list:
+        return new_content[0]
+    
+    return new_content
 
 @app.route('/')
 def index():
@@ -87,10 +120,22 @@ def index():
                 )
             refresh_rate = int(refresh_rate)
 
+        if Markup is not None:
+            colored = request.args\
+                .get('color', True)
+            if isinstance(colored, str):
+                colored = (
+                    True if colored.lower() 
+                        in ('true', '1')
+                    else False
+                )
+        else:
+            colored = False
+
         content = display.get_content(
             temp_units=temp_units,
             vertical=vertical,
-            colored=False,
+            colored=colored,
         )
         if not vertical:
             content = display.rotate(
@@ -100,6 +145,9 @@ def index():
         else:
             content = '\n'.join(content)
 
+        if colored and Markup is not None:
+            content = Markup(_convert_colors(content))
+        
         if not vertical:
             fontsize = (
                 MOBILE_HOR_FONT if is_mobile 
@@ -107,10 +155,16 @@ def index():
             )
             fontsize = get_font(fontsize)
         else:
-            fontsize = (
-                MOBILE_VERT_FONT if is_mobile 
-                else VERT_FONT
-            )
+            if colored:
+                fontsize = (
+                    MOBILE_WEIGHT_FONT if is_mobile 
+                    else VERT_FONT
+                )
+            else:
+                fontsize = (
+                    MOBILE_VERT_FONT if is_mobile 
+                    else VERT_FONT
+                )
 
         return render_template(
             'index.html',
