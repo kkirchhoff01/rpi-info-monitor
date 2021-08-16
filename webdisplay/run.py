@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from rpimonitor import display
-from rpimonitor.constants import Styles
+from rpimonitor.constants import Styles, TempUnits
 from rpimonitor.config import HOSTS, VALID_STYLES
 from webdisplay.config import (
     TEMPLATE_PATH,
@@ -14,6 +14,7 @@ from webdisplay.config import (
     BASE_DISPLAY,
     FONT_UNIT,
     MIN_FONT,
+    REFRESH_RATE,
 )
 from flask import (
     Flask,
@@ -103,10 +104,10 @@ def index():
         )
 
         temp_units = request.args\
-            .get('temp_units', 'celcius')
+            .get('temp_units', TempUnits.CELSIUS)
 
         refresh_rate = request.args\
-            .get('refresh', 30)
+            .get('refresh', REFRESH_RATE)
         if not isinstance(refresh_rate, int):
             if not refresh_rate.isnumeric():
                 raise ValueError(

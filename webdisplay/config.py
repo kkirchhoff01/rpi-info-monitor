@@ -14,6 +14,7 @@ TEMP_UNITS = 'celsius'
 BASE_DISPLAY = 3
 FONT_UNIT = 4
 MIN_FONT = 8
+REFRESH_RATE = 30
 
 __all__ = [
     'TEMPLATE_PATH',
@@ -27,4 +28,5 @@ __all__ = [
     'BASE_DISPLAY',
     'FONT_UNIT',
     'MIN_FONT',
+    'REFRESH_RATE',
 ]
