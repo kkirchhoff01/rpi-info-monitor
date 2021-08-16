@@ -39,6 +39,9 @@ def timestring(width=WIDTH):
         am_pm, hour = False, 12
     else:
         am_pm, hour = divmod(hour, 12)
+
+    if hour == 0:
+        hour = 12
     
     minute = str(_now.time()).split(':')[1]
     formatted_time = f"{'0' if hour < 10 else ''}{hour}:"\
