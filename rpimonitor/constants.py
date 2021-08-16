@@ -11,9 +11,11 @@ class Styles:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 class TempUnits:
     C = CELSIUS = 'celsius'
     F = FAHRENHEIT = 'fahrenheit'
+
 
 __all__ = [
     'Styles',
