@@ -8,6 +8,7 @@ Type=simple
 WorkingDirectory=/usr/local/sbin/rpi-info-monitor
 ExecStart=/usr/bin/python3 /usr/local/sbin/rpi-info-monitor/webdisplay/run.py
 StandardInput=tty-force
+Environment="PYTHONPATH=/usr/local/sbin/rpi-info-monitor"
 
 [Install]
 WantedBy=multi-user.target
