@@ -2,24 +2,25 @@
 A simple, configurable application and set of services to monitor multiple raspberry pi's on a network. It can be used in a terminal or a web UI.
 
 There are three components:
- 1. `rpimonitorapi` - A flask API that runs on each pi to communicate information about the running proccesses and resources
- 2. `display` - A module used to format and display the information about each pi into a terminal or web UI (can be viewed vertically or horizontally)
+ 1. `rpimonitor` - A module used to format and display the information about each pi into a terminal or web UI (can be viewed vertically or horizontally)
+ 2. `rpimonitorapi` - A flask API that runs on each pi to communicate information about the running proccesses and resources
  3. `webdisplay` - A flask service that can be used to host the front end web UI. It can be installed on the main pi or another machine, but is not required
     
     
-NOTE: The web UI (`webdisplay`) depends on the `display` module. It is suggested to keep these two folders in the same directory if you want to run the web UI. Otherwise you will need to add the `display` module contents to your PYTHONPATH
+NOTE: The web UI (`webdisplay`) depends on the `rpimonitor` module. It is suggested to install the module or keep these two folders in the same directory if you want to run the web UI. Otherwise you will need to add the `rpimonitor` module to your PYTHONPATH
 
 ## Installation/Usage:
 ----------------------
  1. Install the flask service on each pi by running the `install.sh` script as root or setting up the services manually
- 3. On your main pi/machine that will be used to run the display, modify the `HOSTS` variable in `display/config.py` with the host names and local IPs of your pi's
+ 2. On your main pi/machine that will be used to run the display, modify the `HOSTS` variable in `rpimonitor/config.py` with the host names and local IPs of your pi's
+ 3. After modifying the configuration, you can install using the `setup.py`: `python3 setup.py install`
  4. Install the required python modules on the main pi/machine (`pip install -r requirements.txt`)
  5. You can then install the `rpi-info-webapi` service if you want to use the web UI (if using the web UI, you can get better formatting for mobile by installing the `flask_mobility` package)
- 6. To run the display loop in a terminal, use `python3 -m display --run-forever [options]`
+ 6. To run the display loop in a terminal, use `python3 -m rpimonitor --run-forever [options]`
 
 ## Confiugration:
 -----------------
-The `config.py` file in the display directory/module is used by the web UI and command line utility. The below configurations are available:
+The `config.py` file in the rpimonitor directory/module is used by the web UI and command line utility. The below configurations are available:
  - `HOSTS` - A list of dictionaries that contain 2 keys: 1) `"hostname"` - the host name of the pi and 2) `"local_ip"` - the local IP address of the pi
  - `SERVICES` - A list of services (names of proccesses) to display in the services panel
  - `COUNT_DISPLAY_SERVICES` - A list of names from `SERVICES` that will display the number of running processes instead of `Running`/`Stopped`
@@ -29,13 +30,14 @@ The `config.py` file in the display directory/module is used by the web UI and c
  - `PCT_RED_THRESH` - The threshold used to color numeric values as red
  - `SLEEP_TIME` - The time to sleep between each refresh (when using `-r`/`--run-forever` in the terminal)
  - `TEMP_UNITS` - Units that the CPU temperature will be displayed in (fahrenheit/celsius)
+ - `MAX_TEMP` - Maximum temperature (fahrenheit)
 
 
 ## Examples:
 -----------
 #### Command:
 
-`$ ./display.sh` or `$ python3 -m display`
+`$ ./display.sh` or `$ python3 -m rpimonitor`
 
 NOTE: You can pass `--no-color` to not include coloring in the terminal display
 
@@ -71,7 +73,7 @@ CPU Temp:         45.8C              |CPU Temp:         37.5C              |CPU 
 
 #### Command:
 
-`$ ./display.sh --vertical` or`$ python3 -m display --vertical` (or replace `--vertical` with `-v`)
+`$ ./display.sh --vertical` or`$ python3 -m rpimonitor --vertical` (or replace `--vertical` with `-v`)
 
 #### Output:
 

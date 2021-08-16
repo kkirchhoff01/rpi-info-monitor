@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-from . import display
-from .config import SLEEP_TIME
+from rpimonitor import display
+from rpimonitor.config import SLEEP_TIME
 import subprocess
 import argparse
 import time

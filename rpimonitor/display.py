@@ -1,4 +1,5 @@
-from config import (
+from rpimonitor.constants import Styles
+from rpimonitor.config import (
     HOSTS,
     SERVICES,
     COUNT_DISPLAY_SERVICES,
@@ -19,19 +20,7 @@ from numbers import Number
 ListOrStr = Union[List[str], str]
 
 
-class Styles:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    GREEN = OKGREEN = '\033[92m'
-    YELLOW = WARNING = '\033[93m'
-    RED = FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
-def timestring(width=WIDTH):
+def timestring(width: int = WIDTH) -> str:
     """Get AM/PM formatted time"""
     _now = datetime.datetime.now()
     hour = _now.time().hour
@@ -42,7 +31,7 @@ def timestring(width=WIDTH):
 
     if hour == 0:
         hour = 12
-    
+
     minute = str(_now.time()).split(':')[1]
     formatted_time = f"{' ' if hour < 10 else ''}{hour}:"\
         f"{minute} {'PM' if am_pm else 'AM'}"
@@ -51,7 +40,7 @@ def timestring(width=WIDTH):
     return curdate + ' '*buffer_ + formatted_time
 
 
-def _get_len(row):
+def _get_len(row: str) -> int:
     """Get length excluding ANSI colors"""
     row = row[:]
     for s in VALID_STYLES:
@@ -88,7 +77,8 @@ def rotate(content: list,
     return content_horizontal
 
 
-def format_usage_str(resources, colored=True):
+def format_usage_str(resources: dict,
+                     colored: bool = True) -> List[str]:
     """Format information on resource usage"""
     mem_info = resources['memory']
     cpu_info = resources['cpu']
@@ -134,7 +124,7 @@ def format_usage_str(resources, colored=True):
                 )
                 temp_str += temp_color
             else:
-                temp_str += Styles.RED 
+                temp_str += Styles.RED
 
     mem_str += f'{mem_info["used"]:,.1f}'\
         f'/{mem_info["total"]:,.1f}GB '\
@@ -160,14 +150,15 @@ def format_usage_str(resources, colored=True):
         mem_str,
         cpu_str,
     ]
-    
+
     if temp_info is not None:
         res.append(temp_str)
 
     return res
 
 
-def format_service_str(service, colored=True):
+def format_service_str(service: dict,
+                       colored: bool = True) -> str:
     """Format string with service information"""
     s_title = f'{service["name"]}:'
     if service["name"] in COUNT_DISPLAY_SERVICES:
@@ -193,7 +184,7 @@ def format_service_str(service, colored=True):
     return f'{s_title}{buffer_}{status}'
 
 
-def format_ip_info(ip_info):
+def format_ip_info(ip_info: dict) -> List[str]:
     """Format string with IP information"""
     formatted = []
     ip, state, city = 'IP:', 'IP State:', 'IP City:'
