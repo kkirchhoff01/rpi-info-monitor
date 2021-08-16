@@ -2,15 +2,22 @@
 
 import sys
 import os
-displaypath = os.path.join(
-    os.path.dirname(__file__),
-    '..',
-    'display',
+from rpimonitor import display
+from rpimonitor.constants import Styles
+from rpimonitor.config import HOSTS, VALID_STYLES
+from webdisplay.config import (
+    TEMPLATE_PATH,
+    PORT,
+    DEFAULT_FONT,
+    VERT_FONT,
+    MOBILE_HOR_FONT,
+    MOBILE_VERT_FONT,
+    MOBILE_WEIGHT_FONT,
+    TEMP_UNITS,
+    BASE_DISPLAY,
+    FONT_UNIT,
+    MIN_FONT,
 )
-sys.path.insert(0, os.path.abspath(displaypath))
-import display
-from display import Styles
-from config import HOSTS, VALID_STYLES
 from flask import (
     Flask,
     Response,
@@ -26,29 +33,21 @@ try:
 except ImportError:
     Mobility = None
 
-template_path = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)),
-    'templates',
-)
+COLOR_MAP = {
+    Styles.RED: '<span class="red">',
+    Styles.GREEN: '<span class="green">',
+    Styles.OKBLUE: '<span class="blue">',
+    Styles.BOLD: '<span class="converted-bold">',
+    Styles.ENDC: '</span>',
+}
 
 app = Flask(
     __name__,
-    template_folder=template_path,
+    template_folder=TEMPLATE_PATH,
 )
 
 if Mobility is not None:
     Mobility(app)
-
-PORT = 5100
-DEFAULT_FONT = 18
-VERT_FONT = 13.5
-MOBILE_HOR_FONT = 12
-MOBILE_VERT_FONT = 26
-MOBILE_WEIGHT_FONT = 17
-TEMP_UNITS = 'celsius'
-BASE_DISPLAY = 3
-FONT_UNIT = 4
-MIN_FONT = 8
 
 
 def get_font(default=DEFAULT_FONT):
@@ -64,13 +63,6 @@ def get_font(default=DEFAULT_FONT):
     )
 
 def _convert_colors(content):
-    color_map = {
-        Styles.RED: '<span class="red">',
-        Styles.GREEN: '<span class="green">',
-        Styles.OKBLUE: '<span class="blue">',
-        Styles.BOLD: '<span class="converted-bold">',
-        Styles.ENDC: '</span>',
-    }
     new_content = []
     is_list = isinstance(content, (list, tuple))
     if not is_list:
@@ -81,7 +73,7 @@ def _convert_colors(content):
             new_content.extend(_convert_colors(row))
             continue
         for color in VALID_STYLES:
-            new_color = color_map.get(color, '')
+            new_color = COLOR_MAP.get(color, '')
             row = row.replace(color, new_color)
     
         new_content.append(row)
