@@ -4,7 +4,7 @@ TEMPLATE_PATH = os.path.join(
     os.path.abspath(os.path.dirname(__file__)),
     'templates',
 )
-PORT = 5300
+PORT = 5100
 DEFAULT_FONT = 18
 VERT_FONT = 13.5
 MOBILE_HOR_FONT = 12

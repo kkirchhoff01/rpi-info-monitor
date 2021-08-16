@@ -5,7 +5,6 @@ import datetime
 import requests
 import psutil
 from flask import Flask, Response, request
-import socket
 import json
 import copy
 import time

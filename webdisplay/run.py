@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import sys
-import os
 from rpimonitor import display
 from rpimonitor.constants import Styles
 from rpimonitor.config import HOSTS, VALID_STYLES
@@ -13,7 +11,6 @@ from webdisplay.config import (
     MOBILE_HOR_FONT,
     MOBILE_VERT_FONT,
     MOBILE_WEIGHT_FONT,
-    TEMP_UNITS,
     BASE_DISPLAY,
     FONT_UNIT,
     MIN_FONT,
