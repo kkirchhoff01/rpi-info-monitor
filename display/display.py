@@ -44,7 +44,7 @@ def timestring(width=WIDTH):
         hour = 12
     
     minute = str(_now.time()).split(':')[1]
-    formatted_time = f"{'0' if hour < 10 else ''}{hour}:"\
+    formatted_time = f"{' ' if hour < 10 else ''}{hour}:"\
         f"{minute} {'PM' if am_pm else 'AM'}"
     curdate = str(_now).split(' ')[0]
     buffer_ = width - (len(curdate) + len(formatted_time))
