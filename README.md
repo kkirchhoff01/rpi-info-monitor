@@ -7,7 +7,7 @@ There are three components:
  3. `webdisplay` - A flask service that can be used to host the front end web UI. It can be installed on the main pi or another machine, but is not required
     
     
-NOTE: The web UI (`webdisplay`) depends on the `display` module. It is suggested to keep these two folders in the same directory if you want to run the web UI. Otherwise you will need to add the `display` module contents to your PYTHONPATH
+NOTE: The web UI (`webdisplay`) depends on the `rpimonitor` module. It is suggested to install the module or keep these two folders in the same directory if you want to run the web UI. Otherwise you will need to add the `rpimonitor` module to your PYTHONPATH
 
 ## Installation/Usage:
 ----------------------
@@ -20,7 +20,7 @@ NOTE: The web UI (`webdisplay`) depends on the `display` module. It is suggested
 
 ## Confiugration:
 -----------------
-The `config.py` file in the display directory/module is used by the web UI and command line utility. The below configurations are available:
+The `config.py` file in the rpimonitor directory/module is used by the web UI and command line utility. The below configurations are available:
  - `HOSTS` - A list of dictionaries that contain 2 keys: 1) `"hostname"` - the host name of the pi and 2) `"local_ip"` - the local IP address of the pi
  - `SERVICES` - A list of services (names of proccesses) to display in the services panel
  - `COUNT_DISPLAY_SERVICES` - A list of names from `SERVICES` that will display the number of running processes instead of `Running`/`Stopped`

@@ -2,12 +2,8 @@
 # Add all host/ip info for each pi
 HOSTS = [
     {
-        'hostname': 'rpi1',
-        'local_ip': '192.168.1.1',
-    },
-    {
-        'hostname': 'rpi2',
-        'local_ip': '192.168.1.2',
+        'hostname': 'localhost',
+        'local_ip': '127.0.0.1',
     },
 ]
 
