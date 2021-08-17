@@ -67,7 +67,7 @@ def _convert_colors(content):
     
     for row in content:
         if isinstance(row, (list, tuple)):
-            new_content.extend(_convert_colors(row))
+            new_content.append(_convert_colors(row))
             continue
         for color in VALID_STYLES:
             new_color = COLOR_MAP.get(color, '')
