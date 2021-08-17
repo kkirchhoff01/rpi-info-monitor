@@ -38,8 +38,72 @@
     </script>
 </head>
 <body class="{{mode}}">
+    <div id="settings-bar">
+        <label for="vertical-orientation">Vertical:</label>
+        <input type="checkbox"
+               id="vertical-orientation"
+               onchange="applySetting('vertical-orientation', 'orientation')"
+               checked="{{is_mobile_vert}}"
+               style="margin-right: 10px;" />
+        <label for="mode">Dark Mode:</label>
+        <input type="checkbox"
+               id="mode"
+               onchange="applySetting('mode', 'mode')"
+               style="margin-right: 10px;" />
+        <label for="temp-units">Temp Units:</label>
+        <select id="temp-units"
+                onchange="applySetting('temp-units', 'temp_units')"
+                style="margin-right: 10px;">
+                <option value="celsius">Celsius</option>
+                <option value="fahrenheit">Fahrenheit</option>
+        </select>
+        <label for="refresh-rate">Refresh Rate:</label>
+        <input type="number"
+               id="refresh-rate"
+               onchange="applySetting('refresh-rate', 'refresh')" />
+    </div>
+<div>
 <pre style="font-size:{{fontsize}}">
 {{content}}
 </pre>
+</div>
 </body>
+<script>
+    const SETTINGS_MAP = {
+        "mode": function(value) { return value.checked ? "dark" : "light"; },
+        "refresh": function(value) { return value.value; },
+        "temp_units": function(value) { return value.value.toLowerCase(); },
+        "orientation": function(value) { return value.checked ? "vertical" : "horizontal"; }
+    };
+    function applySetting(id, name) {
+        var value = document.getElementById(id);
+        var newUrl = new URL(window.location.href);
+        let valueFunc = SETTINGS_MAP[name];
+        var newValue = valueFunc(value);
+        newUrl.searchParams.set(name, newValue);
+        window.location.assign(newUrl.toString());
+    }
+    function currentValue(name, id) {
+        var curUrl = new URL(window.location.href);
+        if (curUrl.searchParams.has(name)) {
+            var curValue = curUrl.searchParams.get(name);
+            console.log(name + ': ' + curValue);
+            var value = document.getElementById(id);
+            console.log(value);
+            if (name == "mode") {
+                value.checked = (curValue == "dark");
+            }
+            else if (name == "orientation") {
+                value.checked = (curValue == "vertical");
+            }
+            else {
+                value.value = curValue;
+            }
+        }
+    }
+    currentValue("orientation", "vertical-orientation");
+    currentValue("mode", "mode");
+    currentValue("refresh", "refresh-rate");
+    currentValue("temp_units", "temp-units");
+</script>
 </html>

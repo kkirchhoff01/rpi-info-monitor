@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from rpimonitor import display
-from rpimonitor.constants import Styles
+from rpimonitor.constants import Styles, TempUnits
 from rpimonitor.config import HOSTS, VALID_STYLES
 from webdisplay.config import (
     TEMPLATE_PATH,
@@ -67,7 +67,7 @@ def _convert_colors(content):
     
     for row in content:
         if isinstance(row, (list, tuple)):
-            new_content.extend(_convert_colors(row))
+            new_content.append(_convert_colors(row))
             continue
         for color in VALID_STYLES:
             new_color = COLOR_MAP.get(color, '')
@@ -103,7 +103,7 @@ def index():
         )
 
         temp_units = request.args\
-            .get('temp_units', 'celcius')
+            .get('temp_units', TempUnits.CELSIUS)
 
         refresh_rate = request.args\
             .get('refresh', 30)
@@ -168,6 +168,10 @@ def index():
             fontsize=fontsize,
             refresh=refresh_rate,
             mode=mode,
+            is_mobile_vert=(
+                "true" if vertical
+                else ""
+            ),
         )
     except Exception as e:
         return Response(
