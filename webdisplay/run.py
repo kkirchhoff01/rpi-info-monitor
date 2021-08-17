@@ -70,7 +70,7 @@ def _convert_colors(content):
             new_content.append(_convert_colors(row))
             continue
         for color in VALID_STYLES:
-            new_color = COLOR_MAP.get(color, '')
+            new_color = COLOR_MAP.get(color, '<span>')
             row = row.replace(color, new_color)
     
         new_content.append(row)
