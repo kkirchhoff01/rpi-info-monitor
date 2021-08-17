@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from rpimonitor import display
-from rpimonitor.constants import Styles
+from rpimonitor.constants import Styles, TempUnits
 from rpimonitor.config import HOSTS, VALID_STYLES
 from webdisplay.config import (
     TEMPLATE_PATH,
@@ -103,7 +103,7 @@ def index():
         )
 
         temp_units = request.args\
-            .get('temp_units', 'celcius')
+            .get('temp_units', TempUnits.CELSIUS)
 
         refresh_rate = request.args\
             .get('refresh', 30)

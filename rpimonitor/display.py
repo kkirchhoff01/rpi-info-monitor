@@ -186,7 +186,6 @@ def format_service_str(service: dict,
 
 def format_ip_info(ip_info: dict) -> List[str]:
     """Format string with IP information"""
-    formatted = []
     ip, state, city = 'IP:', 'IP State:', 'IP City:'
     ip += (VALUE_SPACING - len(ip)) * ' '
     state += (VALUE_SPACING - len(state)) * ' '
