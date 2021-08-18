@@ -87,9 +87,7 @@
         var curUrl = new URL(window.location.href);
         if (curUrl.searchParams.has(name)) {
             var curValue = curUrl.searchParams.get(name);
-            console.log(name + ': ' + curValue);
             var value = document.getElementById(id);
-            console.log(value);
             if (name == "mode") {
                 value.checked = (curValue == "dark");
             }
