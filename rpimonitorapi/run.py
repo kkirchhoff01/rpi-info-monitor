@@ -1,31 +1,90 @@
 #!/usr/bin/python3
 
-import functools
+from functools import lru_cache
 import datetime
 import requests
 import psutil
 from flask import Flask, Response, request
+from typing import Dict, List, Union
 import json
-import copy
 import time
 
 app = Flask(__name__)
 timestamp = None
 
+
 PORT = 5000
+CACHE_TIME = 2
 
 
-@functools.lru_cache(None)
+class _Process:
+    def __init__(self,
+                 name: str,
+                 status_only: bool = True):
+        self.name = name
+        self.status_only = status_only
+        self._procs = []
+        self.count = 0
+
+    def initialize(self):
+        self._procs = [
+            p for p in psutil.process_iter()
+            if p.name().lower() == self.name.lower()
+        ]
+
+        self.count = len(self._procs)
+
+    def _update(self):
+        refresh = any(
+            p for p in self._procs
+            if not p.is_running()
+        )
+        # Only refresh when
+        # process status has changed
+        if refresh:
+            self.initialize()
+
+    @property
+    def running(self) -> Union[bool, int]:
+        self._update()
+        if self.status_only:
+            return self.count > 0
+        else:
+            return self.count
+
+    def __str__(self):
+        if self.status_only:
+            return (
+                'Running' if self.running
+                else 'Stopped'
+            )
+        else:
+            return f'{self.running} Services'
+
+class ProcessCache:
+    def __init__(self):
+        self.processes = {}
+
+    def add(self, name):
+        if name.lower() in self.processes:
+            return
+        proc = _Process(name)
+        proc.initialize()
+        self.processes[name.lower()] = proc
+
+    def get(self, name):
+        if name.lower() not in self.processes:
+            self.add(name)
+
+        return self.processes[name.lower()]
+
+proc_cache = ProcessCache()
+
+
+@lru_cache(None)
 def get_ip_info_cached():
     res = requests.get("https://ipleak.net/json/", verify=False)
     return res.json()
-
-
-@functools.lru_cache(None)
-def get_service_info_cached(service):
-    procs = [p.name() for p in psutil.process_iter()]
-    proc_count = len([p for p in procs if p == service])
-    return proc_count, procs
 
 
 def get_uptime_string():
@@ -79,7 +138,7 @@ def get_usage_info(format_string=True, fahrenheit=True):
         }
 
 
-def _check_timestamp(refresh=5):
+def _check_timestamp(refresh=CACHE_TIME):
     global timestamp
     if timestamp is None:
         timestamp = datetime.datetime.now()
@@ -88,34 +147,34 @@ def _check_timestamp(refresh=5):
     if (timediff.seconds / 60) >= refresh:
         # Cache will clear after refresh period is exceeded
         get_ip_info_cached.cache_clear()
-        get_service_info_cached.cache_clear()
         timestamp = datetime.datetime.now()
 
 
-def get_ip_info():
-    _check_timestamp()
-    return copy.deepcopy(get_ip_info_cached())
-
-
-def get_service_info(services=('pihole-FTL', 'qbittorrent-nox')):
+def get_ip_info() -> Dict[str, str]:
     _check_timestamp()
 
+    ip_info = get_ip_info_cached()
+    return ip_info
+
+
+def get_service_info(
+        services=('pihole-FTL', 'qbittorrent-nox'),
+        ) -> List[Dict[str, object]]:
     service_info = []
     for service in services:
-        proc_count, procs = get_service_info_cached(service)
+        proc = proc_cache.get(service)
         service_info.append({
             'name': service,
-            'count': proc_count,
-            'running': (proc_count > 0)
+            'count': proc.count,
+            'running': proc.running,
         })
-    return copy.deepcopy(service_info)
+    return service_info
 
 
 @app.route('/api/clear-cache')
 def clear_cache():
     try:
         get_ip_info_cached.cache_clear()
-        get_service_info_cached.cache_clear()
         return Response(status=200)
     except Exception as e:
         return Response(str(e), status=500)
