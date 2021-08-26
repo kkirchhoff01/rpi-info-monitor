@@ -116,6 +116,17 @@ def index():
                 )
             refresh_rate = int(refresh_rate)
 
+        fontsize = request.args\
+            .get('font_size')
+        if fontsize is not None:
+            if not fontsize.isnumeric():
+                raise ValueError(
+                    'Invalid font size: '
+                    f'{fontsize}. Must be '
+                    'an integer'
+                )
+            fontsize = int(fontsize)
+
         if Markup is not None:
             colored = request.args\
                 .get('color', True)
@@ -144,23 +155,24 @@ def index():
         if colored and Markup is not None:
             content = Markup(_convert_colors(content))
         
-        if not vertical:
-            fontsize = (
-                MOBILE_HOR_FONT if is_mobile 
-                else DEFAULT_FONT
-            )
-            fontsize = get_font(fontsize)
-        else:
-            if colored:
+        if fontsize is None:
+            if not vertical:
                 fontsize = (
-                    MOBILE_WEIGHT_FONT if is_mobile 
-                    else VERT_FONT
+                    MOBILE_HOR_FONT if is_mobile 
+                    else DEFAULT_FONT
                 )
+                fontsize = get_font(fontsize)
             else:
-                fontsize = (
-                    MOBILE_VERT_FONT if is_mobile 
-                    else VERT_FONT
-                )
+                if colored:
+                    fontsize = (
+                        MOBILE_WEIGHT_FONT if is_mobile
+                        else VERT_FONT
+                    )
+                else:
+                    fontsize = (
+                        MOBILE_VERT_FONT if is_mobile 
+                        else VERT_FONT
+                    )
 
         return render_template(
             'index.html',

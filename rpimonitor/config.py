@@ -14,6 +14,7 @@ SERVICES = [
     'qbittorrent-nox',
     'dockerd',
     'minidlnad',
+    'jupyter-lab',
     'sshfs',
 ]
 
