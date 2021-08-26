@@ -15,6 +15,7 @@ timestamp = None
 
 PORT = 5000
 CACHE_TIME = 2
+PROC_CACHE = 30
 
 
 class _Process:
@@ -25,6 +26,7 @@ class _Process:
         self.status_only = status_only
         self._procs = []
         self.count = 0
+        self._timestamp = datetime.datetime.now()
 
     def initialize(self):
         self._procs = [
@@ -35,6 +37,16 @@ class _Process:
         self.count = len(self._procs)
 
     def _update(self):
+        if self.count == 0:
+            last_refresh = (
+                datetime.datetime.now() -
+                    self._timestamp
+            )
+            if last_refresh.seconds / 60 >= CACHE_TIME:
+                self.initialize()
+                self._timestamp = datetime.datetime.now()
+            return
+        
         refresh = any(
             p for p in self._procs
             if not p.is_running()
@@ -52,6 +64,16 @@ class _Process:
         else:
             return self.count
 
+    def get_info(self) -> Dict[str, object]:
+        # Call `running` first to make
+        # sure count is updated
+        _running = self.running
+        return {
+            'name': self.name,
+            'running': _running,
+            'count': self.count,
+        }
+
     def __str__(self):
         if self.status_only:
             return (
@@ -64,6 +86,7 @@ class _Process:
 class ProcessCache:
     def __init__(self):
         self.processes = {}
+        self._timestamp = datetime.datetime.now()
 
     def add(self, name):
         if name.lower() in self.processes:
@@ -72,11 +95,28 @@ class ProcessCache:
         proc.initialize()
         self.processes[name.lower()] = proc
 
-    def get(self, name):
+    def _check_timestamp(self):
+        # Periodic refresh for each process
+        last_refresh = (
+            datetime.datetime.now() -
+                self._timestamp
+        )
+        if last_refresh.seconds / 60 >= PROC_CACHE:
+            self._timestamp = datetime.datetime.now()
+            for proc in self.processes:
+                proc.initialize()
+
+    def get(self, name, info_dict=True):
+        self._check_timestamp()
+        
         if name.lower() not in self.processes:
             self.add(name)
 
-        return self.processes[name.lower()]
+        curproc = self.processes[name.lower()]
+        if info_dict:
+            return curproc.get_info()
+        else:
+            return curproc
 
 proc_cache = ProcessCache()
 
@@ -162,11 +202,11 @@ def get_service_info(
         ) -> List[Dict[str, object]]:
     service_info = []
     for service in services:
-        proc = proc_cache.get(service)
+        proc = proc_cache.get(service, info_dict=True)
         service_info.append({
             'name': service,
-            'count': proc.count,
-            'running': proc.running,
+            'count': proc['count'],
+            'running': proc['running'],
         })
     return service_info
 

@@ -40,11 +40,17 @@
 <body class="{{mode}}">
     <div id="settings-bar">
         <label for="vertical-orientation">Vertical:</label>
+        {% if is_mobile_vert %}
         <input type="checkbox"
                id="vertical-orientation"
                onchange="applySetting('vertical-orientation', 'orientation')"
-               checked="{{is_mobile_vert}}"
+               style="margin-right: 10px;" checked/>
+        {% else %}
+        <input type="checkbox"
+               id="vertical-orientation"
+               onchange="applySetting('vertical-orientation', 'orientation')"
                style="margin-right: 10px;" />
+        {% endif %}
         <label for="mode">Dark Mode:</label>
         <input type="checkbox"
                id="mode"
@@ -83,7 +89,7 @@
         newUrl.searchParams.set(name, newValue);
         window.location.assign(newUrl.toString());
     }
-    function currentValue(name, id) {
+    function setCurrentValue(name, id) {
         var curUrl = new URL(window.location.href);
         if (curUrl.searchParams.has(name)) {
             var curValue = curUrl.searchParams.get(name);
@@ -99,9 +105,9 @@
             }
         }
     }
-    currentValue("orientation", "vertical-orientation");
-    currentValue("mode", "mode");
-    currentValue("refresh", "refresh-rate");
-    currentValue("temp_units", "temp-units");
+    setCurrentValue("orientation", "vertical-orientation");
+    setCurrentValue("mode", "mode");
+    setCurrentValue("refresh", "refresh-rate");
+    setCurrentValue("temp_units", "temp-units");
 </script>
 </html>
