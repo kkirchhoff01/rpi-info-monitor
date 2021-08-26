@@ -29,6 +29,7 @@ class _Process:
         self._timestamp = datetime.datetime.now()
 
     def initialize(self):
+        self._timestamp = datetime.datetime.now()
         self._procs = [
             p for p in psutil.process_iter()
             if p.name().lower() == self.name.lower()
@@ -44,7 +45,6 @@ class _Process:
             )
             if last_refresh.seconds / 60 >= CACHE_TIME:
                 self.initialize()
-                self._timestamp = datetime.datetime.now()
             return
         
         refresh = any(
@@ -102,9 +102,12 @@ class ProcessCache:
                 self._timestamp
         )
         if last_refresh.seconds / 60 >= PROC_CACHE:
-            self._timestamp = datetime.datetime.now()
-            for proc in self.processes:
-                proc.initialize()
+            self.reset()
+
+    def reset(self):
+        self._timestamp = datetime.datetime.now()
+        for proc in self.processes.values():
+            proc.initialize()
 
     def get(self, name, info_dict=True):
         self._check_timestamp()
@@ -215,6 +218,7 @@ def get_service_info(
 def clear_cache():
     try:
         get_ip_info_cached.cache_clear()
+        proc_cache.reset()
         return Response(status=200)
     except Exception as e:
         return Response(str(e), status=500)
