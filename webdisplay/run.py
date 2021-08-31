@@ -157,11 +157,10 @@ def index():
         
         if fontsize is None:
             if not vertical:
-                fontsize = (
-                    MOBILE_HOR_FONT if is_mobile 
-                    else DEFAULT_FONT
-                )
-                fontsize = get_font(fontsize)
+                if is_mobile:
+                    fontsize = MOBILE_HOR_FONT
+                else:
+                    fontsize = get_font(DEFAULT_FONT)
             else:
                 if colored:
                     fontsize = (
