@@ -241,9 +241,8 @@ def server_info():
             .get('format_usage', True)
         if isinstance(format_usage, str):
             format_usage = (
-                True if format_usage.lower() 
+                format_usage.lower()
                     in ('true', '1')
-                else False
             )
         temp_units = request.args\
             .get('temp_units', 'fahrenheit')
