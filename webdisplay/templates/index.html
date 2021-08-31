@@ -19,6 +19,9 @@
             background: black;
             color: white;
         }
+        label.font-format{
+            font-size: {{fontsize}}
+        }
     </style>
     <script>
         function updateOrientation() {
@@ -39,7 +42,7 @@
 </head>
 <body class="{{mode}}">
     <div id="settings-bar">
-        <label for="vertical-orientation">Vertical:</label>
+        <label class="font-format" for="vertical-orientation">Vertical:</label>
         {% if is_mobile_vert %}
         <input type="checkbox"
                id="vertical-orientation"
@@ -51,19 +54,19 @@
                onchange="applySetting('vertical-orientation', 'orientation')"
                style="margin-right: 10px;" />
         {% endif %}
-        <label for="mode">Dark Mode:</label>
+        <label class="font-format" for="mode">Dark Mode:</label>
         <input type="checkbox"
                id="mode"
                onchange="applySetting('mode', 'mode')"
                style="margin-right: 10px;" />
-        <label for="temp-units">Temp Units:</label>
+        <label class="font-format" for="temp-units">Temp Units:</label>
         <select id="temp-units"
                 onchange="applySetting('temp-units', 'temp_units')"
                 style="margin-right: 10px;">
                 <option value="celsius">Celsius</option>
                 <option value="fahrenheit">Fahrenheit</option>
         </select>
-        <label for="refresh-rate">Refresh Rate:</label>
+        <label class="font-format" for="refresh-rate">Refresh Rate:</label>
         <input type="number"
                id="refresh-rate"
                onchange="applySetting('refresh-rate', 'refresh')" />

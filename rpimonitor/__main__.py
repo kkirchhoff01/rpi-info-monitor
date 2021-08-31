@@ -2,10 +2,11 @@
 
 from rpimonitor import display
 from rpimonitor.config import SLEEP_TIME
-import subprocess
 import argparse
 import time
+import os
 
+_clear = lambda: os.system('clear')
 
 def run(vertical=False, colored=True, temp_units=None):
     content = display.get_content(
@@ -20,7 +21,7 @@ def run(vertical=False, colored=True, temp_units=None):
         )
     else:
         content = '\n'.join(content)
-    _ = subprocess.call('clear', shell=True)
+    _clear()
     print(content)
 
 
