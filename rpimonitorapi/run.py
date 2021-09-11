@@ -48,8 +48,8 @@ class _Process:
             return
         
         refresh = any(
-            p for p in self._procs
-            if not p.is_running()
+            (not p.is_running())
+            for p in self._procs
         )
         # Only refresh when
         # process status has changed
