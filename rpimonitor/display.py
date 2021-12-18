@@ -10,14 +10,25 @@ from rpimonitor.config import (
     VALID_STYLES,
     TEMP_UNITS,
     MAX_TEMP,
+    HOST_TIMEOUT,
 )
-import requests
-import datetime
 from typing import Union, List
 from numbers import Number
+import requests
+import datetime
+import socket
 
 
 ListOrStr = Union[List[str], str]
+
+def _check_host_status(host: str,
+                       port: int = API_PORT) -> bool:
+    sock = socket.socket(
+        socket.AF_INET,
+        socket.SOCK_STREAM,
+    )
+    result = sock.connect_ex((host, port))
+    return (result == 0)
 
 
 def timestring(width: int = WIDTH) -> str:
@@ -231,17 +242,29 @@ def get_content(vertical: bool = True,
                 f'{local_ip}{Styles.ENDC*2}'
         else:
             header = f'{hostname} - {local_ip}'
-        try:
-            services = ','.join(SERVICES)
-            temp_units = temp_units or TEMP_UNITS
-            status_content = requests.get(
-                f'http://{local_ip}:{API_PORT}/api/info'
-                f'?services={services}'
-                f'&format_usage=false'
-                f'&temp_units={temp_units}',
-            )
-            status_content = status_content.json()
-        except Exception:
+        
+        host_status = _check_host_status(
+            local_ip,
+            API_PORT,
+        )
+        if host_status:
+            try:
+                services = ','.join(SERVICES)
+                temp_units = temp_units or TEMP_UNITS
+                status_content = requests.get(
+                    f'http://{local_ip}:{API_PORT}/api/info'
+                    f'?services={services}'
+                    f'&format_usage=false'
+                    f'&temp_units={temp_units}',
+                    timeout=HOST_TIMEOUT,
+                )
+                status_content = status_content.json()
+            except Exception:
+                status_content = None
+        else:
+            status_content = None
+        
+        if status_content is None:
             display_content.extend([
                 header,
                 '-'*WIDTH,
@@ -298,6 +321,11 @@ def get_content(vertical: bool = True,
             display_content.append('\n')
 
     if not vertical:
+        max_len = max(map(len, _display_content))
+        if not all(len(dc) == max_len for dc in _display_content):
+            for d in _display_content:
+                if len(d) < max_len:
+                    d.extend(['']*(max_len - len(d)))
         display_content = _display_content[:]
 
     return display_content
