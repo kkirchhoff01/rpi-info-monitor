@@ -14,7 +14,6 @@ SERVICES = [
     'qbittorrent-nox',
     'dockerd',
     'minidlnad',
-    'jupyter-lab',
     'sshfs',
 ]
 
@@ -46,6 +45,9 @@ PCT_RED_THRESH = 80.0
 TEMP_UNITS = 'celsius'
 MAX_TEMP = 185.0
 
+# Timeout for request
+HOST_TIMEOUT = 10
+
 __all__ = [
     'HOSTS',
     'SERVICES',
@@ -58,4 +60,5 @@ __all__ = [
     'VALID_STYLES',
     'TEMP_UNITS',
     'MAX_TEMP',
+    'HOST_TIMEOUT',
 ]
