@@ -1,3 +1,4 @@
+import shutil as _shutil
 
 # Add all host/ip info for each pi
 HOSTS = [
@@ -38,13 +39,18 @@ VALID_STYLES = [
 ]
 
 # Width of display
-WIDTH = 37
-VALUE_SPACING = 18
+WIDTH = _shutil.get_terminal_size()\
+    .columns // len(HOSTS) - 1
+VALUE_SPACING = 20
 API_PORT = 5000
 SLEEP_TIME = 5
 PCT_RED_THRESH = 80.0
 TEMP_UNITS = 'celsius'
 MAX_TEMP = 185.0
+
+# Timeouts for host check and request
+SOCK_TIMEOUT = 1
+HOST_TIMEOUT = 10
 
 __all__ = [
     'HOSTS',
@@ -58,4 +64,6 @@ __all__ = [
     'VALID_STYLES',
     'TEMP_UNITS',
     'MAX_TEMP',
+    'HOST_TIMEOUT',
+    'SOCK_TIMEOUT',
 ]

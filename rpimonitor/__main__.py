@@ -5,6 +5,10 @@ from rpimonitor.config import SLEEP_TIME
 import argparse
 import time
 import os
+try:
+    import cursor
+except ImportError:
+    cursor = None
 
 _clear = lambda: os.system('clear')
 
@@ -56,6 +60,8 @@ if __name__ == '__main__':
     )
     args = argparser.parse_args()
 
+    if cursor is not None:
+        cursor.hide()
     # If run_forever is True, run an
     # infinite loop (e.g. `while True:`)
     while args.run_forever:
