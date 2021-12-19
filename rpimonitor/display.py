@@ -11,6 +11,7 @@ from rpimonitor.config import (
     TEMP_UNITS,
     MAX_TEMP,
     HOST_TIMEOUT,
+    SOCK_TIMEOUT,
 )
 from typing import Union, List
 from numbers import Number
@@ -27,6 +28,7 @@ def _check_host_status(host: str,
         socket.AF_INET,
         socket.SOCK_STREAM,
     )
+    sock.settimeout(SOCK_TIMEOUT)
     result = sock.connect_ex((host, port))
     return (result == 0)
 
@@ -243,6 +245,8 @@ def get_content(vertical: bool = True,
         else:
             header = f'{hostname} - {local_ip}'
         
+        # Status check uses a smaller timeout to
+        # see if the host is reachable before calling
         host_status = _check_host_status(
             local_ip,
             API_PORT,
@@ -259,7 +263,7 @@ def get_content(vertical: bool = True,
                     timeout=HOST_TIMEOUT,
                 )
                 status_content = status_content.json()
-            except Exception:
+            except requests.exceptions.RequestException as e:
                 status_content = None
         else:
             status_content = None

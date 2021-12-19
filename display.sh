@@ -1,3 +1,3 @@
 #!/bin/bash
 
-clear && python3 -m rpimonitor $@
+python3 -m rpimonitor $@
